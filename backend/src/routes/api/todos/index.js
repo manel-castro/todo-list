@@ -2,12 +2,16 @@ import express from "express";
 import { body } from "express-validator";
 import Todo from "../../../models/Todo.js";
 import { validateRequest } from "../../../middlewares/validate-request.js";
+import { currentUser } from "../../../middlewares/current-user.js";
+import { requireAuth } from "../../../middlewares/require-auth.js";
 
 const router = express.Router();
 
 router.post(
   "/add",
   [
+    currentUser,
+    requireAuth,
     body("title").isString().withMessage("required-title"),
     body("description").isString().withMessage("required-description"),
     body("responsible").isString().withMessage("required-responsible"),
@@ -15,8 +19,10 @@ router.post(
   ],
   async (req, res) => {
     try {
+      const userId = req.currentUser.id;
+
       const { title, description, responsible } = req.body;
-      const todo = new Todo({ title, description, responsible });
+      const todo = new Todo({ title, description, responsible, userId });
       await todo.save();
 
       return res.status(201).json(todo);

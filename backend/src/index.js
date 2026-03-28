@@ -3,6 +3,25 @@ import mongoose from "mongoose";
 import app from "./app.js";
 
 /**
+ * CHECK ALL ENVIRONMENT VARIABLES ARE SET
+ */
+const requiredEnv = [
+  "MONGO_URI",
+  "PORT",
+  "JWT_SECRET",
+  "JWT_SECRET_REFRESH",
+  "ACCESS_TOKEN_EXPIRATION_SECONDS",
+  "REFRESH_TOKEN_EXPIRATION_SECONDS",
+];
+
+const missing = requiredEnv.filter((k) => !process.env[k]);
+if (missing.length) {
+  throw new Error(
+    `Missing required environment variables: ${missing.join(", ")}`,
+  );
+}
+
+/**
  * CONNECT MONGODB AND START SERVER
  */
 const MONGO_URI = process.env.MONGO_URI;

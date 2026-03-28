@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json bun.lockb* package-lock.json* ./
 
 # Install production dependencies with Bun
-RUN bun install --production
+RUN bun install
 
 # Copy application source
 COPY . .
