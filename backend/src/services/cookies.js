@@ -11,22 +11,6 @@ export const deleteCookie = (res, cookieName) => {
   ]);
 };
 
-export const setRefreshToken = (res, userRefreshJwt) => {
-  const REFRESH_TOKEN_EXPIRATION_SECONDS = Number(
-    process.env.REFRESH_TOKEN_EXPIRATION_SECONDS,
-  );
-
-  const expireTime = new Date(
-    Date.now() + REFRESH_TOKEN_EXPIRATION_SECONDS * 1000,
-  );
-
-  res.cookie("refreshToken", userRefreshJwt, {
-    expires: expireTime,
-    httpOnly: true,
-    secure: true,
-  });
-};
-
 export const setAccessToken = (res, userAccessJwt) => {
   const ACCESS_TOKEN_EXPIRATION_SECONDS = Number(
     process.env.ACCESS_TOKEN_EXPIRATION_SECONDS,

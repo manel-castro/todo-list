@@ -17,7 +17,7 @@ describe("currentUser middleware", () => {
     expect(next).toHaveBeenCalled();
     const err = next.mock.calls[0][0];
     expect(err).toBeInstanceOf(Error);
-    expect(err.message).toBe("not-authorized");
+    expect(err.message).toBe("Not authorized");
   });
 
   it("sets req.currentUser and calls next when valid token", () => {
@@ -44,6 +44,6 @@ describe("currentUser middleware", () => {
     expect(next).toHaveBeenCalled();
     const err = next.mock.calls[0][0];
     expect(err).toBeInstanceOf(Error);
-    expect(err.message).toBe("not-authorized");
+    expect(err.message).toBe("Not authorized");
   });
 });

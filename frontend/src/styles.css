@@ -3,4 +3,17 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
+}
+
+:root {
+  --navbar-height: 64px;
+}
+
+.page-navbar {
+  height: var(--navbar-height);
+}
+
+.page-container {
+  padding-top: calc(var(--navbar-height) + 30px);
 }

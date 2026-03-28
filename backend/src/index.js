@@ -9,9 +9,7 @@ const requiredEnv = [
   "MONGO_URI",
   "PORT",
   "JWT_SECRET",
-  "JWT_SECRET_REFRESH",
   "ACCESS_TOKEN_EXPIRATION_SECONDS",
-  "REFRESH_TOKEN_EXPIRATION_SECONDS",
 ];
 
 const missing = requiredEnv.filter((k) => !process.env[k]);

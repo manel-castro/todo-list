@@ -11,7 +11,7 @@ export default function Navbar(): JSX.Element {
   const authenticated = location.pathname === "/todos";
 
   return (
-    <AppBar position="static">
+    <AppBar position="absolute" className="page-navbar">
       <Toolbar>
         <Typography variant="h6" component="div">
           Todos App

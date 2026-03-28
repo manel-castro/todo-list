@@ -1,22 +1,16 @@
 import { jest } from "@jest/globals";
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import request from "supertest";
 import jwt from "jsonwebtoken";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
+import request from "supertest";
 
-// set required env vars before importing the app
+// ensure required env vars are set for tests
 process.env.MONGO_URI =
   process.env.MONGO_URI || "mongodb://localhost:27017/test";
 process.env.PORT = process.env.PORT || "3000";
-process.env.PASSWORD_PEPPER = process.env.PASSWORD_PEPPER || "pepper_test";
-process.env.SALT_ROUNDS = process.env.SALT_ROUNDS || "10";
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret";
-process.env.JWT_SECRET_REFRESH =
-  process.env.JWT_SECRET_REFRESH || "test_jwt_refresh";
 process.env.ACCESS_TOKEN_EXPIRATION_SECONDS =
   process.env.ACCESS_TOKEN_EXPIRATION_SECONDS || "3600";
-process.env.REFRESH_TOKEN_EXPIRATION_SECONDS =
-  process.env.REFRESH_TOKEN_EXPIRATION_SECONDS || String(60 * 60 * 24 * 30);
 
 import app from "../../../../app.js";
 import User from "../../../../models/User.js";
@@ -44,7 +38,7 @@ afterEach(async () => {
 });
 
 describe("Auth routes", () => {
-  it("register sets session and refreshToken cookies", async () => {
+  it("register sets session cookie", async () => {
     const agent = request.agent(app);
 
     const res = await agent.post("/api/auth/register").send({
@@ -55,9 +49,7 @@ describe("Auth routes", () => {
     expect(res.status).toBe(201);
     const cookies = res.headers["set-cookie"] || [];
     const hasSession = cookies.some((c) => c.startsWith("session="));
-    const hasRefresh = cookies.some((c) => c.startsWith("refreshToken="));
     expect(hasSession).toBe(true);
-    expect(hasRefresh).toBe(true);
 
     // extract session token and verify payload
     const sessionCookie = cookies.find((c) => c.startsWith("session="));
@@ -94,7 +86,6 @@ describe("Auth routes", () => {
     expect(res.status).toBe(200);
     const cookies = res.headers["set-cookie"] || [];
     expect(cookies.some((c) => c.startsWith("session="))).toBe(true);
-    expect(cookies.some((c) => c.startsWith("refreshToken="))).toBe(true);
   });
 
   it("logout clears cookies when called with existing cookies", async () => {
@@ -119,12 +110,6 @@ describe("Auth routes", () => {
         /session=.*Expires|Expires/.test(c) ||
         /session=;/.test(c),
     );
-    const clearedRefresh = cookies.some(
-      (c) =>
-        c.startsWith("refreshToken=deleted") ||
-        /refreshToken=.*Expires|Expires/.test(c) ||
-        /refreshToken=;/.test(c),
-    );
-    expect(clearedSession || clearedRefresh).toBe(true);
+    expect(clearedSession).toBe(true);
   });
 });

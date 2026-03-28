@@ -1,12 +1,8 @@
 import { jest } from "@jest/globals";
 // ensure secrets available
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret";
-process.env.JWT_SECRET_REFRESH =
-  process.env.JWT_SECRET_REFRESH || "test_jwt_refresh";
 process.env.ACCESS_TOKEN_EXPIRATION_SECONDS =
   process.env.ACCESS_TOKEN_EXPIRATION_SECONDS || "3600";
-process.env.REFRESH_TOKEN_EXPIRATION_SECONDS =
-  process.env.REFRESH_TOKEN_EXPIRATION_SECONDS || String(60 * 60 * 24 * 30);
 
 import {
   createAccessToken,
@@ -22,18 +18,6 @@ describe("Tokens service", () => {
     const payload = VerifyJwtToken(token, process.env.JWT_SECRET);
     expect(payload).toHaveProperty("id", "1");
     expect(payload).toHaveProperty("username", "alice");
-    expect(payload.exp).toBeGreaterThan(Math.floor(Date.now() / 1000));
-  });
-
-  it("creates and verifies refresh tokens", () => {
-    const token = createRefreshToken({ username: "bob" });
-    expect(typeof token).toBe("string");
-
-    const payload = VerifyJwtToken(
-      token,
-      process.env.JWT_SECRET_REFRESH || process.env.JWT_SECRET,
-    );
-    expect(payload).toHaveProperty("username", "bob");
     expect(payload.exp).toBeGreaterThan(Math.floor(Date.now() / 1000));
   });
 });

@@ -1,28 +1,16 @@
 import { jest } from "@jest/globals";
-import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 import request from "supertest";
-import User from "../../../../models/User.js";
-import {
-  createAccessToken,
-  createRefreshToken,
-} from "../../../../services/tokens.js";
-import { Password } from "../../../../services/password.js";
 import app from "../../../../app.js";
 
 // ensure env vars required by app are set before importing
 process.env.MONGO_URI =
   process.env.MONGO_URI || "mongodb://localhost:27017/test";
 process.env.PORT = process.env.PORT || "3000";
-process.env.PASSWORD_PEPPER = process.env.PASSWORD_PEPPER || "pepper_test";
-process.env.SALT_ROUNDS = process.env.SALT_ROUNDS || "10";
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret";
-process.env.JWT_SECRET_REFRESH =
-  process.env.JWT_SECRET_REFRESH || "test_jwt_refresh";
 process.env.ACCESS_TOKEN_EXPIRATION_SECONDS =
   process.env.ACCESS_TOKEN_EXPIRATION_SECONDS || "3600";
-process.env.REFRESH_TOKEN_EXPIRATION_SECONDS =
-  process.env.REFRESH_TOKEN_EXPIRATION_SECONDS || String(60 * 60 * 24 * 30);
 
 // allow more time for mongodb-memory-server to download/start
 jest.setTimeout(30000);

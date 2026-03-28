@@ -1,16 +1,12 @@
 import express from "express";
 import { body } from "express-validator";
-import User from "../../../models/User.js";
-import { validateRequest } from "../../../middlewares/validate-request.js";
-import { Password } from "../../../services/password.js";
-import jwt from "jsonwebtoken";
-import {
-  createAccessToken,
-  createRefreshToken,
-} from "../../../services/tokens.js";
-import { setAccessToken, setRefreshToken } from "../../../services/cookies.js";
 import { BadRequestError } from "../../../errors/bad-request-error.js";
 import { currentUser } from "../../../middlewares/current-user.js";
+import { validateRequest } from "../../../middlewares/validate-request.js";
+import User from "../../../models/User.js";
+import { setAccessToken } from "../../../services/cookies.js";
+import { Password } from "../../../services/password.js";
+import { createAccessToken } from "../../../services/tokens.js";
 
 const router = express.Router();
 
@@ -45,10 +41,8 @@ router.post(
         id: userObj.id,
         username: userObj.username,
       });
-      const refreshToken = createRefreshToken({ username: userObj.username });
 
       // Store it in the user's cookies
-      setRefreshToken(res, refreshToken);
       setAccessToken(res, accessToken);
 
       return res.status(201).send();
@@ -90,10 +84,8 @@ router.post(
         id: existing.id,
         username: existing.username,
       });
-      const refreshToken = createRefreshToken({ username: existing.username });
 
       // Store it in the user's cookies
-      setRefreshToken(res, refreshToken);
       setAccessToken(res, accessToken);
 
       return res.status(200).send();
@@ -107,7 +99,6 @@ router.post(
 router.post("/logout", async (req, res) => {
   try {
     res.clearCookie("session");
-    res.clearCookie("refreshToken");
 
     res.send({});
   } catch (err) {
