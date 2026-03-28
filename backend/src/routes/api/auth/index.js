@@ -10,16 +10,17 @@ import {
 } from "../../../services/tokens.js";
 import { setAccessToken, setRefreshToken } from "../../../services/cookies.js";
 import { BadRequestError } from "../../../errors/bad-request-error.js";
+import { currentUser } from "../../../middlewares/current-user.js";
 
 const router = express.Router();
 
 router.post(
   "/register",
   [
-    body("username").isString().withMessage("required-username"),
+    body("username").isString().withMessage("Username is required"),
     body("password")
       .isLength({ min: 6, max: 20 })
-      .withMessage("signup-password-invalid"),
+      .withMessage("Password must be between 6 and 20 characters"),
     validateRequest,
   ],
   async (req, res, next) => {
@@ -29,7 +30,7 @@ router.post(
       // check existing user by username
       const existing = await User.findOne({ username });
       if (existing) {
-        return next(new BadRequestError("user-already-exists"));
+        return next(new BadRequestError("User already exists"));
       }
 
       // hashing: use pepper (from env) and the central Password service
@@ -53,7 +54,7 @@ router.post(
       return res.status(201).send();
     } catch (err) {
       console.error(err);
-      return next(new BadRequestError("create-user-failed"));
+      return next(new BadRequestError("Failed to create user"));
     }
   },
 );
@@ -61,10 +62,10 @@ router.post(
 router.post(
   "/login",
   [
-    body("username").isString().withMessage("required-username"),
+    body("username").isString().withMessage("Username is required"),
     body("password")
       .isLength({ min: 6, max: 20 })
-      .withMessage("signup-password-invalid"),
+      .withMessage("Password must be between 6 and 20 characters"),
     validateRequest,
   ],
   async (req, res, next) => {
@@ -73,7 +74,7 @@ router.post(
 
       const existing = await User.findOne({ username });
       if (!existing) {
-        return next(new BadRequestError("user-not-found"));
+        return next(new BadRequestError("User not found"));
       }
 
       const passwordsMatch = await Password.compare(
@@ -82,7 +83,7 @@ router.post(
       );
 
       if (!passwordsMatch) {
-        return next(new BadRequestError("login-invalid-credentials"));
+        return next(new BadRequestError("Invalid username or password"));
       }
 
       const accessToken = createAccessToken({
@@ -98,7 +99,7 @@ router.post(
       return res.status(200).send();
     } catch (err) {
       console.error(err);
-      return next(new BadRequestError("login-failed"));
+      return next(new BadRequestError("Login failed"));
     }
   },
 );
@@ -111,7 +112,16 @@ router.post("/logout", async (req, res) => {
     res.send({});
   } catch (err) {
     console.error(err);
-    return next(new BadRequestError("logout-failed"));
+    return next(new BadRequestError("Logout failed"));
+  }
+});
+
+// endpoint used by frontend to verify if there is a valid session cookie
+router.get("/user-authenticated", currentUser, async (req, res) => {
+  if (req.currentUser) {
+    return res.status(200).send({ authenticated: true, user: req.currentUser });
+  } else {
+    return res.status(401).send({ authenticated: false });
   }
 });
 
