@@ -16,14 +16,21 @@ router.post(
     body("title").isString().withMessage("required-title"),
     body("description").isString().withMessage("required-description"),
     body("responsible").isString().withMessage("required-responsible"),
+    body("completed").optional().isBoolean(),
     validateRequest,
   ],
   async (req, res, next) => {
     try {
       const userId = req.currentUser.id;
 
-      const { title, description, responsible } = req.body;
-      const todo = new Todo({ title, description, responsible, userId });
+      const { title, description, responsible, completed } = req.body;
+      const todo = new Todo({
+        title,
+        description,
+        responsible,
+        completed,
+        userId,
+      });
       await todo.save();
 
       return res.status(201).json(todo);
@@ -56,23 +63,25 @@ router.put(
     body("title").optional().isString(),
     body("description").optional().isString(),
     body("responsible").optional().isString(),
+    body("completed").optional().isBoolean(),
     validateRequest,
   ],
   async (req, res, next) => {
     try {
       const userId = req.currentUser.id;
 
-      const { id, title, description, responsible } = req.body;
+      const { id, title, description, responsible, completed } = req.body;
 
       const update = {};
       if (title !== undefined) update.title = title;
       if (description !== undefined) update.description = description;
       if (responsible !== undefined) update.responsible = responsible;
+      if (completed !== undefined) update.completed = completed;
 
       const updated = await Todo.findOneAndUpdate(
-        { _id: id, userId },
+        { _id: id, userId }, // include userId for security
         { $set: update },
-        { new: true },
+        { new: true, runValidators: true },
       );
 
       if (!updated) {

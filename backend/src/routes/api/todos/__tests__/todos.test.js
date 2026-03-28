@@ -126,3 +126,115 @@ describe("POST /api/todos/add", () => {
     expect(res.body.responsible).toBe(payload.responsible);
   });
 });
+
+describe("GET /api/todos/list", () => {
+  it("creates a todo then lists it for the authenticated user", async () => {
+    const cookies = await getCookieHeader("listUser");
+
+    const payload = {
+      title: "Read book",
+      description: "Read chapter 1",
+      responsible: "Bob",
+    };
+
+    const createTodo = await request(app)
+      .post("/api/todos/add")
+      .set("Cookie", cookies)
+      .send(payload)
+      .set("Accept", "application/json");
+
+    expect(createTodo.status).toBe(201);
+    const created = createTodo.body;
+    expect(created).toHaveProperty("id");
+
+    const listRes = await request(app)
+      .get("/api/todos/list")
+      .set("Cookie", cookies);
+    expect(listRes.status).toBe(200);
+    expect(Array.isArray(listRes.body)).toBe(true);
+    expect(listRes.body.length).toBeGreaterThanOrEqual(1);
+
+    const foundTodo = listRes.body.find((t) => t.id === created.id);
+    expect(foundTodo).toBeDefined();
+    expect(foundTodo.title).toBe(payload.title);
+    expect(foundTodo.description).toBe(payload.description);
+    expect(foundTodo.responsible).toBe(payload.responsible);
+  });
+});
+
+describe("PUT /api/todos/update", () => {
+  it("creates a todo then updates it", async () => {
+    const cookies = await getCookieHeader("updateUser");
+
+    const payload = {
+      title: "Do laundry",
+      description: "Wash whites",
+      responsible: "Alice",
+    };
+
+    const createRes = await request(app)
+      .post("/api/todos/add")
+      .set("Cookie", cookies)
+      .send(payload)
+      .set("Accept", "application/json");
+
+    expect(createRes.status).toBe(201);
+    const created = createRes.body;
+
+    const updatePayload = {
+      id: created.id,
+      title: "Do laundry updated",
+      description: "Wash colors",
+    };
+
+    const updateRes = await request(app)
+      .put("/api/todos/update")
+      .set("Cookie", cookies)
+      .send(updatePayload)
+      .set("Accept", "application/json");
+
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body).toHaveProperty("id", created.id);
+    expect(updateRes.body.title).toBe(updatePayload.title);
+    expect(updateRes.body.description).toBe(updatePayload.description);
+    // unchanged field remains
+    expect(updateRes.body.responsible).toBe(payload.responsible);
+  });
+
+  it("creates a todo then marks it completed", async () => {
+    const cookies = await getCookieHeader("completeUser");
+
+    const payload = {
+      title: "Write tests",
+      description: "Add completed flag test",
+      responsible: "Sam",
+    };
+
+    const createRes = await request(app)
+      .post("/api/todos/add")
+      .set("Cookie", cookies)
+      .send(payload)
+      .set("Accept", "application/json");
+
+    expect(createRes.status).toBe(201);
+    const created = createRes.body;
+    expect(created).toHaveProperty("id");
+    // default should be false
+    expect(created.completed).toBe(false);
+
+    const updatePayload = {
+      id: created.id,
+      completed: true,
+    };
+
+    const completedTodoRes = await request(app)
+      .put("/api/todos/update")
+      .set("Cookie", cookies)
+      .send(updatePayload)
+      .set("Accept", "application/json");
+
+    expect(completedTodoRes.status).toBe(200);
+    expect(completedTodoRes.body).toHaveProperty("id", created.id);
+    expect(completedTodoRes.body.completed).toBe(true);
+  });
+});
