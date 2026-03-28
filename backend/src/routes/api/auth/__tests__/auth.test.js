@@ -53,18 +53,20 @@ describe("Auth routes", () => {
     });
 
     expect(res.status).toBe(201);
-    const setCookies = res.headers["set-cookie"] || [];
-    const hasSession = setCookies.some((c) => c.startsWith("session="));
-    const hasRefresh = setCookies.some((c) => c.startsWith("refreshToken="));
+    const cookies = res.headers["set-cookie"] || [];
+    const hasSession = cookies.some((c) => c.startsWith("session="));
+    const hasRefresh = cookies.some((c) => c.startsWith("refreshToken="));
     expect(hasSession).toBe(true);
     expect(hasRefresh).toBe(true);
 
     // extract session token and verify payload
-    const sessionCookie = setCookies.find((c) => c.startsWith("session="));
+    const sessionCookie = cookies.find((c) => c.startsWith("session="));
     const sessionMatch =
       sessionCookie && sessionCookie.match(/session=([^;]+)/);
     expect(sessionMatch).toBeTruthy();
     const sessionToken = sessionMatch[1];
+
+    // Verify token
     const payload = jwt.verify(sessionToken, process.env.JWT_SECRET);
     expect(payload).toHaveProperty("username", "alice");
     expect(payload).toHaveProperty("id");
@@ -90,9 +92,9 @@ describe("Auth routes", () => {
     });
 
     expect(res.status).toBe(200);
-    const setCookies = res.headers["set-cookie"] || [];
-    expect(setCookies.some((c) => c.startsWith("session="))).toBe(true);
-    expect(setCookies.some((c) => c.startsWith("refreshToken="))).toBe(true);
+    const cookies = res.headers["set-cookie"] || [];
+    expect(cookies.some((c) => c.startsWith("session="))).toBe(true);
+    expect(cookies.some((c) => c.startsWith("refreshToken="))).toBe(true);
   });
 
   it("logout clears cookies when called with existing cookies", async () => {
@@ -109,15 +111,15 @@ describe("Auth routes", () => {
     const out = await agent.post("/api/auth/logout").send();
     expect(out.status).toBe(200);
 
-    const setCookies = out.headers["set-cookie"] || [];
+    const cookies = out.headers["set-cookie"] || [];
     // cookies should be cleared (set-cookie includes session=; or expires in past)
-    const clearedSession = setCookies.some(
+    const clearedSession = cookies.some(
       (c) =>
         c.startsWith("session=deleted") ||
         /session=.*Expires|Expires/.test(c) ||
         /session=;/.test(c),
     );
-    const clearedRefresh = setCookies.some(
+    const clearedRefresh = cookies.some(
       (c) =>
         c.startsWith("refreshToken=deleted") ||
         /refreshToken=.*Expires|Expires/.test(c) ||
