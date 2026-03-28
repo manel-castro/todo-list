@@ -5,6 +5,7 @@ const TodoSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     responsible: { type: String, required: true },
+    userId: { type: String, required: true },
   },
   {
     timestamps: true,
