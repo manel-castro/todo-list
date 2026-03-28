@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 import { errorHandler } from "../error-handler.js";
-import { CustomErrorTest } from "./artifacts/custom-error-test.js";
+import { CustomErrorTest } from "./mocks/custom-error-test.js";
 
 describe("errorHandler middleware", () => {
   it("returns generic error for unknown errors", () => {
