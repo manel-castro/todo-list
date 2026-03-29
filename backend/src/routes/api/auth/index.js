@@ -23,13 +23,10 @@ router.post(
     try {
       const { username, password } = req.body;
 
-      // check existing user by username
       const existing = await User.findOne({ username });
       if (existing) {
         return next(new BadRequestError("User already exists"));
       }
-
-      // hashing: use pepper (from env) and the central Password service
 
       const hashed = await Password.toHash(password);
 
