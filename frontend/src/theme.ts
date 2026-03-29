@@ -2,10 +2,10 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
-    primary: { main: "#FFD600" }, // yellow
-    secondary: { main: "#FF9800" }, // orange
+    primary: { main: "#FFD600" },
+    secondary: { main: "#FF9800" },
     background: {
-      default: "#FFF9E6", // light yellow background for the whole app
+      default: "#FFF9E6",
     },
   },
   components: {

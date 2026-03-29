@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import type { Todo } from "../hooks/useTodos";
-import { RESPONSIBLES } from "../config";
+import { RESPONSIBLES } from "../constants";
 import useTodos from "../hooks/useTodos";
 
 type Props = {

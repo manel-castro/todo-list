@@ -13,11 +13,11 @@ import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 import { Link, Stack } from "@mui/material";
 
+type LoginForm = { username: string; password: string };
+
 export default function Login(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  type LoginForm = { username: string; password: string };
 
   const {
     register,

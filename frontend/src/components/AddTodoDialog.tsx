@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { RESPONSIBLES } from "../config";
+import { RESPONSIBLES } from "../constants";
 import useTodos from "../hooks/useTodos";
 
 export type AddTodoData = {

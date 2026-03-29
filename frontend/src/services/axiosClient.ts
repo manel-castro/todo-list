@@ -5,6 +5,9 @@ const axiosClient = axios.create({
   baseURL: "http://localhost:3000",
 });
 
+/**
+ * CHECK TOKEN EXPIRATION ON EVERY RESPONSE AND REDIRECT TO LOGIN IF EXPIRED
+ */
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
