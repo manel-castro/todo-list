@@ -13,9 +13,9 @@ router.post(
   [
     currentUser,
     requireAuth,
-    body("title").isString().withMessage("required-title"),
-    body("description").isString().withMessage("required-description"),
-    body("responsible").isString().withMessage("required-responsible"),
+    body("title").isString().withMessage("Title is required."),
+    body("description").isString().withMessage("Description is required."),
+    body("responsible").isString().withMessage("Responsible is required."),
     body("completed").optional().isBoolean(),
     validateRequest,
   ],
@@ -36,7 +36,7 @@ router.post(
       return res.status(201).json(todo);
     } catch (err) {
       console.error(err);
-      return next(new BadRequestError("add-todo-failed"));
+      return next(new BadRequestError("Add todo failed."));
     }
   },
 );
@@ -50,7 +50,7 @@ router.get("/list", [currentUser, requireAuth], async (req, res, next) => {
     return res.status(200).json(todos);
   } catch (err) {
     console.error(err);
-    return next(new BadRequestError("list-todos-failed"));
+    return next(new BadRequestError("List todos failed."));
   }
 });
 
@@ -59,7 +59,7 @@ router.put(
   [
     currentUser,
     requireAuth,
-    body("id").isString().withMessage("required-id"),
+    body("id").isString().withMessage("Todo ID is required."),
     body("title").optional().isString(),
     body("description").optional().isString(),
     body("responsible").optional().isString(),
@@ -85,13 +85,41 @@ router.put(
       );
 
       if (!updated) {
-        return next(new BadRequestError("todo-not-found"));
+        return next(new BadRequestError("Todo not found."));
       }
 
       return res.status(200).json(updated);
     } catch (err) {
       console.error(err);
-      return next(new BadRequestError("update-todo-failed"));
+      return next(new BadRequestError("Update todo failed."));
+    }
+  },
+);
+
+router.delete(
+  "/delete",
+  [
+    currentUser,
+    requireAuth,
+    body("id").isString().withMessage("Todo ID is required."),
+    validateRequest,
+  ],
+  async (req, res, next) => {
+    try {
+      const userId = req.currentUser.id;
+
+      const { id } = req.body;
+
+      const deleted = await Todo.findOneAndDelete({ _id: id, userId });
+
+      if (!deleted) {
+        return next(new BadRequestError("Todo not found."));
+      }
+
+      return res.status(200).json(deleted);
+    } catch (err) {
+      console.error(err);
+      return next(new BadRequestError("Delete todo failed."));
     }
   },
 );

@@ -96,6 +96,22 @@ export function useTodos() {
     }
   };
 
+  const deleteTodo = async (id: string) => {
+    try {
+      const res = await axios.delete<Todo>("/api/todos/delete", {
+        data: { id },
+      });
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+      return res.data;
+    } catch (e: any) {
+      throw new Error(
+        e?.response?.data?.errors?.[0]?.message ||
+          e?.message ||
+          "Delete failed",
+      );
+    }
+  };
+
   return {
     todos,
     loading,
@@ -104,6 +120,7 @@ export function useTodos() {
     toggleComplete,
     updateTodo,
     addTodo,
+    deleteTodo,
   };
 }
 

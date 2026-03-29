@@ -6,7 +6,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { Settings } from "lucide-react";
+import { Settings, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { Todo } from "../hooks/api";
 import useTodos from "../hooks/api";
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function TodoItem({ todo }: Props) {
-  const { toggleComplete } = useTodos();
+  const { toggleComplete, deleteTodo } = useTodos();
 
   const [hover, setHover] = useState(false);
   const [isUpdateTodoDialogOpen, setIsUpdateTodoDialogOpen] = useState(false);
@@ -37,6 +37,19 @@ export default function TodoItem({ todo }: Props) {
       );
     } finally {
       setIsLoadingToggle(false);
+    }
+  };
+
+  const onDeleteTodo = async () => {
+    if (!confirm("Delete this todo?")) return;
+    try {
+      await deleteTodo(todo.id);
+    } catch (e: any) {
+      alert(
+        e?.response?.data?.errors?.[0]?.message ||
+          e?.message ||
+          "Delete failed",
+      );
     }
   };
 
@@ -66,14 +79,25 @@ export default function TodoItem({ todo }: Props) {
       </Card>
 
       {hover && (
-        <IconButton
-          aria-label="settings"
-          size="small"
-          sx={{ position: "absolute", top: 8, right: 8, color: "grey.600" }}
-          onClick={() => setIsUpdateTodoDialogOpen(true)}
-        >
-          <Settings size={18} />
-        </IconButton>
+        <>
+          <IconButton
+            aria-label="delete"
+            size="small"
+            sx={{ position: "absolute", top: 8, right: 44, color: "grey.600" }}
+            onClick={onDeleteTodo}
+          >
+            <Trash2 size={16} />
+          </IconButton>
+
+          <IconButton
+            aria-label="settings"
+            size="small"
+            sx={{ position: "absolute", top: 8, right: 8, color: "grey.600" }}
+            onClick={() => setIsUpdateTodoDialogOpen(true)}
+          >
+            <Settings size={18} />
+          </IconButton>
+        </>
       )}
 
       <UpdateTodoDialog
