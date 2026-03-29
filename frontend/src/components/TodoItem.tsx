@@ -11,6 +11,7 @@ import { useState } from "react";
 import type { Todo } from "../hooks/useTodos";
 import useTodos from "../hooks/useTodos";
 import UpdateTodoDialog from "./UpdateTodoDialog";
+import useIsPhone from "../hooks/useIsPhone";
 
 type Props = {
   todo: Todo;
@@ -18,6 +19,9 @@ type Props = {
 
 export default function TodoItem({ todo }: Props) {
   const { toggleComplete, deleteTodo } = useTodos();
+  const { isPhone } = useIsPhone();
+
+  console.log("isPhone: ", isPhone);
 
   const [hover, setHover] = useState(false);
   const [isUpdateTodoDialogOpen, setIsUpdateTodoDialogOpen] = useState(false);
@@ -78,26 +82,35 @@ export default function TodoItem({ todo }: Props) {
         </CardContent>
       </Card>
 
-      {hover && (
-        <>
+      {(hover || isPhone) && (
+        <Box
+          sx={{
+            display: "flex",
+            gap: "2px",
+            position: "absolute",
+            top: 8,
+            right: 8,
+            alignItems: "center",
+          }}
+        >
           <IconButton
             aria-label="delete"
-            size="small"
-            sx={{ position: "absolute", top: 8, right: 44, color: "grey.600" }}
+            size={isPhone ? "large" : "small"}
+            sx={{ color: "grey.600" }}
             onClick={onDeleteTodo}
           >
-            <Trash2 size={16} />
+            <Trash2 size={isPhone ? 24 : 16} />
           </IconButton>
 
           <IconButton
             aria-label="settings"
-            size="small"
-            sx={{ position: "absolute", top: 8, right: 8, color: "grey.600" }}
+            size={isPhone ? "large" : "small"}
+            sx={{ color: "grey.600" }}
             onClick={() => setIsUpdateTodoDialogOpen(true)}
           >
-            <Settings size={18} />
+            <Settings size={isPhone ? 24 : 18} />
           </IconButton>
-        </>
+        </Box>
       )}
 
       <UpdateTodoDialog
