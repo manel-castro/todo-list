@@ -1,15 +1,15 @@
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { TodosProvider } from "./contexts/TodosContext";
 import AuthCheck from "./pages/AuthCheck";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Todos from "./pages/Todos";
-import Navbar from "./components/Navbar";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./theme";
-import { TodosProvider } from "./contexts/TodosContext";
 
 import "./styles.css";
 
