@@ -21,8 +21,6 @@ export default function TodoItem({ todo }: Props) {
   const { toggleComplete, deleteTodo } = useTodos();
   const { isPhone } = useIsPhone();
 
-  console.log("isPhone: ", isPhone);
-
   const [hover, setHover] = useState(false);
   const [isUpdateTodoDialogOpen, setIsUpdateTodoDialogOpen] = useState(false);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);

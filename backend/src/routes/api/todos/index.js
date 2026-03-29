@@ -24,6 +24,7 @@ router.post(
       const userId = req.currentUser.id;
 
       const { title, description, responsible, completed } = req.body;
+
       const todo = new Todo({
         title,
         description,
