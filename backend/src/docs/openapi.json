@@ -163,6 +163,38 @@
           "400": { "description": "Bad Request" }
         }
       }
+    },
+    "/todos/delete": {
+      "delete": {
+        "tags": ["todos"],
+        "summary": "Delete a todo",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Todo" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" }
+        }
+      }
     }
   },
   "components": {

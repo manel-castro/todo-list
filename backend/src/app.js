@@ -1,9 +1,18 @@
 import express from "express";
+import cors from "cors";
 import { ApiRouter } from "./routes/api/index.js";
 import { errorHandler } from "./middlewares/error-handler.js";
 import openapiDocument from "./docs/openapi.json";
 
 const app = express();
+
+// CORS: allow requests from the frontend dev server or origin configured via env
+const corsOptions = {
+  origin: true, // reflect request origin or use specific origin
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // Swagger UI

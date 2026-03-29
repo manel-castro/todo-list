@@ -1,21 +1,20 @@
-import React, { useState } from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  DialogActions,
   Button,
   CircularProgress,
-  FormHelperText,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
 } from "@mui/material";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { RESPONSIBLES } from "../config";
-import { useForm, Controller } from "react-hook-form";
-import useTodos from "../hooks/api";
+import useTodos from "../hooks/useTodos";
 
 export type AddTodoData = {
   title: string;
@@ -67,7 +66,7 @@ export default function AddTodoDialog({ open, onClose }: Props) {
             label="Title"
             margin="normal"
             {...register("title", {
-              required: "Title is required",
+              required: "Title is required.",
               minLength: { value: 3, message: "Minimum 3 characters" },
             })}
             error={!!errors.title}
@@ -78,7 +77,7 @@ export default function AddTodoDialog({ open, onClose }: Props) {
             label="Description"
             margin="normal"
             {...register("description", {
-              required: "Description is required",
+              required: "Description is required.",
               minLength: { value: 3, message: "Minimum 3 characters" },
             })}
             error={!!errors.description}
@@ -91,7 +90,7 @@ export default function AddTodoDialog({ open, onClose }: Props) {
             <Controller
               control={control}
               name="responsible"
-              rules={{ required: "Responsible is required" }}
+              rules={{ required: "Responsible is required." }}
               render={({ field }) => (
                 <Select
                   {...field}

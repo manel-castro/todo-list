@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../hooks/axiosClient";
+import axios from "../services/axiosClient";
 
 export default function AuthCheck(): JSX.Element | null {
   const navigate = useNavigate();

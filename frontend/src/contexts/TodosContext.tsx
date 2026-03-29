@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
-import type { Todo } from "../hooks/api";
-import useTodos from "../hooks/api";
+import type { Todo } from "../hooks/useTodos";
+import useTodos from "../hooks/useTodos";
 
 type TodosState = {
   todos: Todo[];

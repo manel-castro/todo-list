@@ -62,7 +62,7 @@ describe("POST /api/todos/add", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].message).toBe("required-title");
+    expect(res.body.errors[0].message).toBe("Title is required.");
   });
 
   it("returns 400 when description is missing", async () => {
@@ -76,7 +76,7 @@ describe("POST /api/todos/add", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].message).toBe("required-description");
+    expect(res.body.errors[0].message).toBe("Description is required.");
   });
 
   it("returns 400 when responsible is missing", async () => {
@@ -90,7 +90,7 @@ describe("POST /api/todos/add", () => {
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].message).toBe("required-responsible");
+    expect(res.body.errors[0].message).toBe("Responsible is required.");
   });
 
   it("creates a todo when valid data is provided", async () => {
@@ -224,5 +224,70 @@ describe("PUT /api/todos/update", () => {
     expect(completedTodoRes.status).toBe(200);
     expect(completedTodoRes.body).toHaveProperty("id", created.id);
     expect(completedTodoRes.body.completed).toBe(true);
+  });
+});
+
+describe("DELETE /api/todos/delete", () => {
+  it("creates a todo then deletes it", async () => {
+    const cookies = await getCookieHeader("deleteUser");
+
+    const payload = {
+      title: "Temp task",
+      description: "To be deleted",
+      responsible: "Eve",
+    };
+
+    const createRes = await request(app)
+      .post("/api/todos/add")
+      .set("Cookie", cookies)
+      .send(payload)
+      .set("Accept", "application/json");
+
+    expect(createRes.status).toBe(201);
+    const created = createRes.body;
+
+    const deleteRes = await request(app)
+      .delete("/api/todos/delete")
+      .set("Cookie", cookies)
+      .send({ id: created.id })
+      .set("Accept", "application/json");
+
+    expect(deleteRes.status).toBe(200);
+    expect(deleteRes.body).toHaveProperty("id", created.id);
+
+    const listRes = await request(app)
+      .get("/api/todos/list")
+      .set("Cookie", cookies);
+    expect(listRes.status).toBe(200);
+    const found = listRes.body.find((t) => t.id === created.id);
+    expect(found).toBeUndefined();
+  });
+
+  it("returns 400 when todo not found", async () => {
+    const cookies = await getCookieHeader("deleteUser2");
+
+    const res = await request(app)
+      .delete("/api/todos/delete")
+      .set("Cookie", cookies)
+      .send({ id: "507f1f77bcf86cd799439013" })
+      .set("Accept", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].message).toBe("Todo not found.");
+  });
+
+  it("returns 400 when id is missing", async () => {
+    const cookies = await getCookieHeader("deleteUser3");
+
+    const res = await request(app)
+      .delete("/api/todos/delete")
+      .set("Cookie", cookies)
+      .send({})
+      .set("Accept", "application/json");
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].message).toBe("Todo ID is required.");
   });
 });

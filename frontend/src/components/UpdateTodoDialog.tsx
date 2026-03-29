@@ -14,9 +14,9 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import type { Todo } from "../hooks/api";
+import type { Todo } from "../hooks/useTodos";
 import { RESPONSIBLES } from "../config";
-import useTodos from "../hooks/api";
+import useTodos from "../hooks/useTodos";
 
 type Props = {
   open: boolean;
@@ -70,7 +70,7 @@ export default function UpdateTodoDialog({ open, onClose, todo }: Props) {
       alert(
         e?.response?.data?.errors?.[0]?.message ||
           e?.message ||
-          "Failed to save",
+          "Failed to save.",
       );
     }
   };
@@ -88,8 +88,8 @@ export default function UpdateTodoDialog({ open, onClose, todo }: Props) {
             label="Title"
             margin="normal"
             {...register("title", {
-              required: "Title is required",
-              minLength: { value: 3, message: "Minimum 3 characters" },
+              required: "Title is required.",
+              minLength: { value: 3, message: "Minimum 3 characters." },
             })}
             error={!!errors.title}
             helperText={errors.title?.message}
@@ -100,8 +100,8 @@ export default function UpdateTodoDialog({ open, onClose, todo }: Props) {
             label="Description"
             margin="normal"
             {...register("description", {
-              required: "Description is required",
-              minLength: { value: 3, message: "Minimum 3 characters" },
+              required: "Description is required.",
+              minLength: { value: 3, message: "Minimum 3 characters." },
             })}
             error={!!errors.description}
             helperText={errors.description?.message}
@@ -116,7 +116,7 @@ export default function UpdateTodoDialog({ open, onClose, todo }: Props) {
             <Controller
               control={control}
               name="responsible"
-              rules={{ required: "Responsible is required" }}
+              rules={{ required: "Responsible is required." }}
               render={({ field }) => (
                 <Select
                   {...field}

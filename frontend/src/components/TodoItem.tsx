@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import { Settings, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { Todo } from "../hooks/api";
-import useTodos from "../hooks/api";
+import type { Todo } from "../hooks/useTodos";
+import useTodos from "../hooks/useTodos";
 import UpdateTodoDialog from "./UpdateTodoDialog";
 
 type Props = {

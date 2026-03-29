@@ -10,7 +10,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import AddTodoDialog from "../components/AddTodoDialog";
 import TodoItem from "../components/TodoItem";
-import useTodos from "../hooks/api";
+import useTodos from "../hooks/useTodos";
 
 export default function Todos(): JSX.Element {
   const { todos, loading, error } = useTodos();

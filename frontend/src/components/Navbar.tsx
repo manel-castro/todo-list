@@ -12,11 +12,17 @@ export default function Navbar(): JSX.Element {
 
   return (
     <AppBar position="absolute" className="page-navbar">
-      <Toolbar>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
         <Typography variant="h6" component="div">
           Todos App
         </Typography>
-        <Box sx={{ flexGrow: 1 }} />
         {authenticated && <LogoutButton />}
       </Toolbar>
     </AppBar>

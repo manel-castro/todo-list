@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "./axiosClient";
+import axios from "../services/axiosClient";
 import { useTodosContext } from "../contexts/TodosContext";
 
 export interface Todo {
